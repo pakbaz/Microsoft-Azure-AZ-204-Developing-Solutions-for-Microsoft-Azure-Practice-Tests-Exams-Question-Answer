@@ -61,6 +61,40 @@ header h1 {
     font-weight: 500;
 }
 
+.quick-nav {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quick-nav label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.quick-nav input {
+    width: 80px;
+    padding: 5px 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.quick-nav input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-small {
+    padding: 5px 12px;
+    font-size: 0.9rem;
+}
+
 /* Question container */
 .question-container {
     background: #f8f9fa;

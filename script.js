@@ -7,6 +7,7 @@ class AzureExamApp {
         this.initializeElements();
         this.loadQuestions();
         this.bindEvents();
+        this.setupURLHandling();
     }
 
     initializeElements() {
@@ -24,7 +25,9 @@ class AzureExamApp {
             progressFill: document.getElementById('progressFill'),
             prevBtn: document.getElementById('prevBtn'),
             nextBtn: document.getElementById('nextBtn'),
-            showAnswerBtn: document.getElementById('showAnswerBtn')
+            showAnswerBtn: document.getElementById('showAnswerBtn'),
+            jumpToQuestion: document.getElementById('jumpToQuestion'),
+            jumpBtn: document.getElementById('jumpBtn')
         };
     }
 
@@ -33,7 +36,13 @@ class AzureExamApp {
             const response = await fetch('questions.json');
             this.questions = await response.json();
             this.elements.totalQuestions.textContent = this.questions.length;
-            this.displayQuestion();
+            
+            // Update jump input max value
+            this.elements.jumpToQuestion.setAttribute('max', this.questions.length);
+            
+            // Load question from URL or default to first question
+            this.loadQuestionFromURL();
+            
             this.elements.loading.style.display = 'none';
         } catch (error) {
             console.error('Error loading questions:', error);
@@ -176,6 +185,7 @@ class AzureExamApp {
         if (this.currentQuestionIndex > 0) {
             this.currentQuestionIndex--;
             this.displayQuestion();
+            this.updateURL();
         }
     }
 
@@ -183,6 +193,57 @@ class AzureExamApp {
         if (this.currentQuestionIndex < this.questions.length - 1) {
             this.currentQuestionIndex++;
             this.displayQuestion();
+            this.updateURL();
+        }
+    }
+
+    setupURLHandling() {
+        // Listen for browser back/forward navigation
+        window.addEventListener('popstate', (e) => {
+            this.loadQuestionFromURL();
+        });
+        
+        // Load initial question from URL if present
+        this.loadQuestionFromURL();
+    }
+
+    loadQuestionFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionParam = urlParams.get('question');
+        
+        if (questionParam) {
+            const questionNumber = parseInt(questionParam);
+            if (questionNumber >= 1 && questionNumber <= this.questions.length) {
+                this.currentQuestionIndex = questionNumber - 1; // Convert to 0-based index
+                this.displayQuestion();
+                return;
+            }
+        }
+        
+        // If no valid question parameter, start with question 1
+        if (this.questions.length > 0) {
+            this.currentQuestionIndex = 0;
+            this.displayQuestion();
+            this.updateURL();
+        }
+    }
+
+    updateURL() {
+        const questionNumber = this.currentQuestionIndex + 1; // Convert to 1-based
+        const newURL = `${window.location.pathname}?question=${questionNumber}`;
+        
+        // Update URL without triggering page reload
+        window.history.pushState({ questionNumber }, `Question ${questionNumber}`, newURL);
+        
+        // Update page title
+        document.title = `Question ${questionNumber} - Azure AZ-204 Practice Test`;
+    }
+
+    goToQuestion(questionNumber) {
+        if (questionNumber >= 1 && questionNumber <= this.questions.length) {
+            this.currentQuestionIndex = questionNumber - 1; // Convert to 0-based index
+            this.displayQuestion();
+            this.updateURL();
         }
     }
 
@@ -190,9 +251,22 @@ class AzureExamApp {
         this.elements.prevBtn.addEventListener('click', () => this.previousQuestion());
         this.elements.nextBtn.addEventListener('click', () => this.nextQuestion());
         this.elements.showAnswerBtn.addEventListener('click', () => this.showAnswer());
+        this.elements.jumpBtn.addEventListener('click', () => this.handleJumpToQuestion());
+        
+        // Handle Enter key in jump input
+        this.elements.jumpToQuestion.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                this.handleJumpToQuestion();
+            }
+        });
         
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
+            // Skip keyboard navigation if user is typing in the jump input
+            if (e.target === this.elements.jumpToQuestion) {
+                return;
+            }
+            
             if (e.key === 'ArrowLeft') {
                 this.previousQuestion();
             } else if (e.key === 'ArrowRight') {
@@ -202,6 +276,20 @@ class AzureExamApp {
                 this.showAnswer();
             }
         });
+    }
+
+    handleJumpToQuestion() {
+        const questionNumber = parseInt(this.elements.jumpToQuestion.value);
+        if (questionNumber >= 1 && questionNumber <= this.questions.length) {
+            this.goToQuestion(questionNumber);
+            this.elements.jumpToQuestion.value = ''; // Clear the input
+        } else {
+            // Show error feedback
+            this.elements.jumpToQuestion.style.borderColor = '#e74c3c';
+            setTimeout(() => {
+                this.elements.jumpToQuestion.style.borderColor = '#ddd';
+            }, 1000);
+        }
     }
 }
 

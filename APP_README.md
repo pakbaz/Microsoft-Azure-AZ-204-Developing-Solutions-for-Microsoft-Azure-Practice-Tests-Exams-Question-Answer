@@ -34,6 +34,9 @@ A simple, interactive web application for practicing Azure AZ-204 exam questions
 - **Show Answer**: Click the button or press space/enter
 - **Question Options**: Click any option to select it
 - **Progress**: Visual progress bar shows your position in the question set
+- **Direct Navigation**: Type a question number in the jump box and press Enter or click Go
+- **URL Navigation**: Bookmark or share specific questions using URLs like `http://localhost:8000?question=42`
+- **Browser Navigation**: Use browser back/forward buttons to navigate through your question history
 
 ## File Structure
 
