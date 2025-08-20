@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure AZ-204 Practice Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Microsoft Azure AZ-204 Practice Test</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-counter">
+                Question <span id="currentQuestion">1</span> of <span id="totalQuestions">220</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="question-container">
+                <div class="question-number" id="questionNumber">Question 1</div>
+                <div class="question-text" id="questionText">Loading questions...</div>
+                <div class="question-image" id="questionImage"></div>
+                
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options will be dynamically loaded here -->
+                </div>
+
+                <div class="answer-section" id="answerSection" style="display: none;">
+                    <div class="correct-answer" id="correctAnswer"></div>
+                    <div class="explanation" id="explanation"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="prevBtn" class="btn btn-secondary" disabled>Previous</button>
+                <button id="showAnswerBtn" class="btn btn-primary">Show Answer</button>
+                <button id="nextBtn" class="btn btn-secondary">Next</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>Source: <a href="https://github.com/Ditectrev/Microsoft-Azure-AZ-204-Developing-Solutions-for-Microsoft-Azure-Practice-Tests-Exams-Question-Answer" target="_blank">Ditectrev GitHub Repository</a></p>
+        </footer>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading questions...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
